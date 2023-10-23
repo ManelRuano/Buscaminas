@@ -5,9 +5,21 @@ import 'app_data.dart';
 
 // S'encarrega del dibuix personalitzat del joc
 class WidgetTresRatllaPainter extends CustomPainter {
+  int dicultat = 0;
   final AppData appData;
 
   WidgetTresRatllaPainter(this.appData);
+
+  void dif() {
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+        break;
+      case "dificil":
+        dicultat = 15;
+        break;
+    }
+  }
 
   // Dibuixa les linies del taulell
   void drawBoardLines(Canvas canvas, Size size) {
@@ -15,60 +27,111 @@ class WidgetTresRatllaPainter extends CustomPainter {
       ..color = Colors.black
       ..strokeWidth = 5.0;
 
+    dif();
     // Definim els punts on es creuaran les línies verticals
-    final double firstVertical = size.width / 10;
-    final double secondVertical = 2 * size.width / 10;
-    final double trindVertical = 3 * size.width / 10;
-    final double fourVertical = 4 * size.width / 10;
-    final double fiveVertical = 5 * size.width / 10;
-    final double sixVertical = 6 * size.width / 10;
-    final double sevenVertical = 7 * size.width / 10;
-    final double eightVertical = 8 * size.width / 10;
-    final double nineVertical = 9 * size.width / 10;
+    final double firstVertical = size.width / dicultat;
+    final double secondVertical = 2 * size.width / dicultat;
+    final double trindVertical = 3 * size.width / dicultat;
+    final double fourVertical = 4 * size.width / dicultat;
+    final double fiveVertical = 5 * size.width / dicultat;
+    final double sixVertical = 6 * size.width / dicultat;
+    final double sevenVertical = 7 * size.width / dicultat;
+    final double eightVertical = 8 * size.width / dicultat;
+    final double nineVertical = 9 * size.width / dicultat;
+    final double tenVertical = 10 * size.height / dicultat;
+    final double elevenVertical = 11 * size.height / dicultat;
+    final double twelveVertical = 12 * size.height / dicultat;
+    final double thirteenVertical = 13 * size.height / dicultat;
+    final double fourteenVertical = 14 * size.height / dicultat;
+    final double fifteenVertical = 15 * size.height / dicultat;
 
-    List<double> listavertical = [
-      firstVertical,
-      secondVertical,
-      trindVertical,
-      fourVertical,
-      fiveVertical,
-      sixVertical,
-      sevenVertical,
-      eightVertical,
-      nineVertical,
-    ];
     // Dibuixem les línies verticals
 
-    for (int i = 0; i < listavertical.length; i++) {
-      double numero = listavertical[i];
-      canvas.drawLine(Offset(numero, 0), Offset(numero, size.height), paint);
+    // Definim els punts on es creuaran les línies horitzontals
+    final double firstHorizontal = size.height / dicultat;
+    final double secondHorizontal = 2 * size.height / dicultat;
+    final double trindHorizontal = 3 * size.height / dicultat;
+    final double fourHorizontal = 4 * size.height / dicultat;
+    final double fiveHorizontal = 5 * size.height / dicultat;
+    final double sixHorizontal = 6 * size.height / dicultat;
+    final double sevenHorizontal = 7 * size.height / dicultat;
+    final double eightHorizontal = 8 * size.height / dicultat;
+    final double nineHorizontal = 9 * size.height / dicultat;
+    final double tenHorizontal = 10 * size.height / dicultat;
+    final double elevenHorizontal = 11 * size.height / dicultat;
+    final double twelveHorizontal = 12 * size.height / dicultat;
+    final double thirteenHorizontal = 13 * size.height / dicultat;
+    final double fourteenHorizontal = 14 * size.height / dicultat;
+    final double fifteenHorizontal = 15 * size.height / dicultat;
+
+    // Dibuixem les línies horitzontals
+    List<double> listahorizontal = [];
+    List<double> listavertical = [];
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+        listahorizontal = [
+          firstHorizontal,
+          secondHorizontal,
+          trindHorizontal,
+          fourHorizontal,
+          fiveHorizontal,
+          sixHorizontal,
+          sevenHorizontal,
+          eightHorizontal,
+        ];
+        listavertical = [
+          firstVertical,
+          secondVertical,
+          trindVertical,
+          fourVertical,
+          fiveVertical,
+          sixVertical,
+          sevenVertical,
+          eightVertical,
+        ];
+        break;
+      case "dificil":
+        dicultat = 15;
+        listahorizontal = [
+          firstHorizontal,
+          secondHorizontal,
+          trindHorizontal,
+          fourHorizontal,
+          fiveHorizontal,
+          sixHorizontal,
+          sevenHorizontal,
+          eightHorizontal,
+          nineHorizontal,
+          tenHorizontal,
+          elevenHorizontal,
+          twelveHorizontal,
+          thirteenHorizontal,
+          fourteenHorizontal
+        ];
+        listavertical = [
+          firstVertical,
+          secondVertical,
+          trindVertical,
+          fourVertical,
+          fiveVertical,
+          sixVertical,
+          sevenVertical,
+          eightVertical,
+          nineVertical,
+          tenVertical,
+          elevenVertical,
+          twelveVertical,
+          thirteenVertical,
+          fourteenVertical
+        ];
+        break;
     }
 
-    // Definim els punts on es creuaran les línies horitzontals
-    final double firstHorizontal = size.height / 10;
-    final double secondHorizontal = 2 * size.height / 10;
-    final double trindHorizontal = 3 * size.height / 10;
-    final double fourHorizontal = 4 * size.height / 10;
-    final double fiveHorizontal = 5 * size.height / 10;
-    final double sixHorizontal = 6 * size.height / 10;
-    final double sevenHorizontal = 7 * size.height / 10;
-    final double eightHorizontal = 8 * size.height / 10;
-    final double nineHorizontal = 9 * size.height / 10;
-    List<double> listahorizontal = [
-      firstHorizontal,
-      secondHorizontal,
-      trindHorizontal,
-      fourHorizontal,
-      fiveHorizontal,
-      sixHorizontal,
-      sevenHorizontal,
-      eightHorizontal,
-      nineHorizontal,
-    ];
-    // Dibuixem les línies horitzontals
     for (int i = 0; i < listahorizontal.length; i++) {
       double numero = listahorizontal[i];
       canvas.drawLine(Offset(0, numero), Offset(size.width, numero), paint);
+      canvas.drawLine(Offset(numero, 0), Offset(numero, size.height), paint);
     }
   }
 
@@ -92,8 +155,8 @@ class WidgetTresRatllaPainter extends CustomPainter {
       finalWidth = dstHeight * imageAspectRatio;
     }
 
-    double offsetX = x0 + (dstWidth - finalWidth) / 2;
-    double offsetY = y0 + (dstHeight - finalHeight) / 2;
+    double offsetX = x0 + (dstWidth - finalWidth) / dicultat;
+    double offsetY = y0 + (dstHeight - finalHeight) / dicultat;
 
     final srcRect =
         Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
@@ -102,90 +165,49 @@ class WidgetTresRatllaPainter extends CustomPainter {
     canvas.drawImageRect(image, srcRect, dstRect, Paint());
   }
 
-  // Dibuia una creu centrada a una casella del taulell
-  void drawCross(Canvas canvas, double x0, double y0, double x1, double y1,
-      Color color, double strokeWidth) {
-    Paint paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth;
-
-    canvas.drawLine(
-      Offset(x0, y0),
-      Offset(x1, y1),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(x1, y0),
-      Offset(x0, y1),
-      paint,
-    );
-  }
-
-  // Dibuixa un cercle centrat a una casella del taulell
-  void drawCircle(Canvas canvas, double x, double y, double radius, Color color,
-      double strokeWidth) {
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = color
-      ..strokeWidth = strokeWidth;
-    canvas.drawCircle(Offset(x, y), radius, paint);
-  }
-
   // Dibuixa el taulell de joc (creus i rodones)
   void drawBoardStatus(Canvas canvas, Size size) {
-    // Dibuixar 'X' i 'O' del tauler
-    double cellWidth = size.width / 3;
-    double cellHeight = size.height / 3;
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+        break;
+      case "dificil":
+        dicultat = 15;
+        break;
+    }
+    // Dibujar números en lugar de 'X' o 'O' y mantener las bombas ocultas
+    double cellWidth = size.width / dicultat;
+    double cellHeight = size.height / dicultat;
 
-    for (int i = 0; i < 10; i++) {
-      for (int j = 0; j < 10; j++) {
-        if (appData.board[i][j] == 'X') {
-          // Dibuixar una X amb el color del jugador
-          Color color = Colors.blue;
-          switch (appData.colorPlayer) {
-            case "Blau":
-              color = Colors.blue;
-              break;
-            case "Verd":
-              color = Colors.green;
-              break;
-            case "Gris":
-              color = Colors.grey;
-              break;
+    for (int i = 0; i < dicultat; i++) {
+      for (int j = 0; j < dicultat; j++) {
+        String cellValue = appData.board[i][j];
+        if (cellValue != '-') {
+          // Verifica si la celda no es una bomba ('B')
+          if (cellValue != 'B') {
+            // Dibuja el número en el centro de la celda
+            final textStyle = TextStyle(
+              color: Colors.black,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            );
+
+            final textPainter = TextPainter(
+              text: TextSpan(text: cellValue, style: textStyle),
+              textDirection: TextDirection.ltr,
+            );
+
+            textPainter.layout(
+              maxWidth: cellWidth,
+            );
+
+            final position = Offset(
+              j * cellWidth + (cellWidth - textPainter.width) / 2,
+              i * cellHeight + (cellHeight - textPainter.height) / 2,
+            );
+
+            textPainter.paint(canvas, position);
           }
-
-          double x0 = j * cellWidth;
-          double y0 = i * cellHeight;
-          double x1 = (j + 1) * cellWidth;
-          double y1 = (i + 1) * cellHeight;
-
-          drawImage(canvas, appData.imagePlayer!, x0, y0, x1, y1);
-          drawCross(canvas, x0, y0, x1, y1, color, 5.0);
-        } else if (appData.board[i][j] == 'O') {
-          // Dibuixar una O amb el color de l'oponent
-          Color color = Colors.blue;
-          switch (appData.colorOpponent) {
-            case "Vermell":
-              color = Colors.red;
-              break;
-            case "Taronja":
-              color = Colors.orange;
-              break;
-            case "Marró":
-              color = Colors.brown;
-              break;
-          }
-
-          double x0 = j * cellWidth;
-          double y0 = i * cellHeight;
-          double x1 = (j + 1) * cellWidth;
-          double y1 = (i + 1) * cellHeight;
-          double cX = x0 + (x1 - x0) / 2;
-          double cY = y0 + (y1 - y0) / 2;
-          double radius = (min(cellWidth, cellHeight) / 2) - 5;
-
-          drawImage(canvas, appData.imageOpponent!, x0, y0, x1, y1);
-          drawCircle(canvas, cX, cY, radius, color, 5.0);
         }
       }
     }
@@ -193,7 +215,14 @@ class WidgetTresRatllaPainter extends CustomPainter {
 
   // Dibuixa el missatge de joc acabat
   void drawGameOver(Canvas canvas, Size size) {
-    String message = "El joc ha acabat. Ha guanyat ${appData.gameWinner}!";
+    int dicultat = 0;
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+      case "dificil":
+        dicultat = 15;
+    }
+    String message = "El joc ha acabat";
 
     const textStyle = TextStyle(
       color: Colors.black,
@@ -212,8 +241,8 @@ class WidgetTresRatllaPainter extends CustomPainter {
 
     // Centrem el text en el canvas
     final position = Offset(
-      (size.width - textPainter.width) / 8,
-      (size.height - textPainter.height) / 8,
+      (size.width - textPainter.width) / dicultat - 2,
+      (size.height - textPainter.height) / dicultat - 2,
     );
 
     // Dibuixar un rectangle semi-transparent que ocupi tot l'espai del canvas
@@ -233,7 +262,7 @@ class WidgetTresRatllaPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     drawBoardLines(canvas, size);
     drawBoardStatus(canvas, size);
-    if (appData.gameWinner != '-') {
+    if (appData.gameIsOver == true) {
       drawGameOver(canvas, size);
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
@@ -6,6 +7,9 @@ class AppData with ChangeNotifier {
   // App status
   String colorPlayer = "Verd";
   String colorOpponent = "Taronja";
+  String dificultad = "facil";
+  String bombs = "20";
+  int dift = 0;
 
   List<List<String>> board = [];
   bool gameIsOver = false;
@@ -14,90 +18,414 @@ class AppData with ChangeNotifier {
   ui.Image? imagePlayer;
   ui.Image? imageOpponent;
   bool imagesReady = false;
+  void tablero() {}
 
   void resetGame() {
     board = [
-      ['-', '-', '-'],
-      ['-', '-', '-'],
-      ['-', '-', '-'],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
+      [
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-',
+        '-'
+      ],
     ];
     gameIsOver = false;
     gameWinner = '-';
+    generateBombs();
+    dif();
+  }
+
+  void dif() {
+    switch (dificultad) {
+      case "facil":
+        dift = 9;
+        break;
+      case "dificil":
+        dift = 15;
+        break;
+    }
+  }
+
+  void generateBombs() {
+    dif();
+    int numBombs = int.parse(bombs);
+    Random random = Random();
+
+    for (int i = 0; i < numBombs; i++) {
+      int row, col;
+      do {
+        // Genera coordenadas aleatorias para colocar la bomba
+        row = random.nextInt(dift);
+        col = random.nextInt(dift);
+      } while (board[row][col] ==
+          'B'); // Asegúrate de que no coloques una bomba en una celda ocupada
+
+      board[row][col] = 'B'; // Coloca la bomba en la celda
+    }
   }
 
   // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
     if (board[row][col] == '-') {
+      board[row][col] = 'O';
+      checkSurroundings(row, col);
+    }
+    if (board[row][col] == 'B') {
       board[row][col] = 'X';
-      checkGameWinner();
-      if (gameWinner == '-') {
-        machinePlay();
+      gameIsOver = true;
+      return;
+    }
+    checkGameWinner();
+  }
+
+  bool hasBombInSurroundings(int row, int col) {
+    List<List<int>> directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+      [-1, -1],
+      [-1, 1],
+      [1, -1],
+      [1, 1]
+    ];
+
+    for (var direction in directions) {
+      int newRow = row + direction[0];
+      int newCol = col + direction[1];
+
+      if (newRow >= 0 &&
+          newRow < board.length &&
+          newCol >= 0 &&
+          newCol < board[newRow].length) {
+        if (board[newRow][newCol] == 'B') {
+          return true; // Si hay una bomba en las celdas circundantes, devuelve true
+        }
       }
     }
+
+    return false; // No hay bombas en las celdas circundantes
   }
 
   // Fa una jugada de la màquina, només busca la primera posició lliure
-  void machinePlay() {
-    bool moveMade = false;
+  void checkSurroundings(int row, int col) {
+    // Define las direcciones alrededor de la celda (arriba, abajo, izquierda, derecha, diagonales, etc.)
+    List<List<int>> directions = [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [0, -1],
+      [0, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1]
+    ];
 
-    // Buscar una casella lliure '-'
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        if (board[i][j] == '-') {
-          board[i][j] = 'O';
-          moveMade = true;
-          break;
+    int bombCount = 0; // Inicializa el contador de bombas cercanas
+
+    for (var direction in directions) {
+      int newRow = row + direction[0];
+      int newCol = col + direction[1];
+
+      // Verifica si las nuevas coordenadas están dentro de los límites del tablero
+      if (newRow >= 0 &&
+          newRow < board.length &&
+          newCol >= 0 &&
+          newCol < board[newRow].length) {
+        String cellValue = board[newRow][newCol];
+        if (cellValue == 'B') {
+          // Si encuentra una bomba, incrementa el contador
+          bombCount++;
         }
       }
-      if (moveMade) break;
     }
 
-    checkGameWinner();
+    if (bombCount > 0) {
+      // Si hay bombas cercanas, coloca el número de bombas en lugar de "O"
+      board[row][col] = bombCount.toString();
+    } else {
+      // Si no hay bombas cercanas, rellena con "0" y sigue verificando recursivamente
+      board[row][col] = '0';
+
+      for (var direction in directions) {
+        int newRow = row + direction[0];
+        int newCol = col + direction[1];
+
+        // Verifica si las nuevas coordenadas están dentro de los límites del tablero
+        if (newRow >= 0 &&
+            newRow < board.length &&
+            newCol >= 0 &&
+            newCol < board[newRow].length) {
+          String cellValue = board[newRow][newCol];
+          if (cellValue == '-') {
+            // Llama a la función de forma recursiva para seguir rellenando celdas vacías
+            checkSurroundings(newRow, newCol);
+          }
+        }
+      }
+    }
   }
 
   // Comprova si el joc ja té un tres en ratlla
   // No comprova la situació d'empat
   void checkGameWinner() {
-    for (int i = 0; i < 3; i++) {
-      // Comprovar files
-      if (board[i][0] == board[i][1] &&
-          board[i][1] == board[i][2] &&
-          board[i][0] != '-') {
-        gameIsOver = true;
-        gameWinner = board[i][0];
-        return;
-      }
-
-      // Comprovar columnes
-      if (board[0][i] == board[1][i] &&
-          board[1][i] == board[2][i] &&
-          board[0][i] != '-') {
-        gameIsOver = true;
-        gameWinner = board[0][i];
-        return;
+    for (int i = 0; i < dift; i++) {
+      for (int j = 0; j < dift; j++) {
+        if (board[i][j] == "O") {
+          checkSurroundings(i, j);
+        }
       }
     }
-
-    // Comprovar diagonal principal
-    if (board[0][0] == board[1][1] &&
-        board[1][1] == board[2][2] &&
-        board[0][0] != '-') {
-      gameIsOver = true;
-      gameWinner = board[0][0];
-      return;
-    }
-
-    // Comprovar diagonal secundària
-    if (board[0][2] == board[1][1] &&
-        board[1][1] == board[2][0] &&
-        board[0][2] != '-') {
-      gameIsOver = true;
-      gameWinner = board[0][2];
-      return;
-    }
-
     // No hi ha guanyador, torna '-'
-    gameWinner = '-';
   }
 
   // Carrega les imatges per dibuixar-les al Canvas

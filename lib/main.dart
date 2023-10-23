@@ -29,6 +29,7 @@ void main() async {
 
 // Show the window when it's ready
 void showWindow(_) async {
-  windowManager.setMinimumSize(const Size(300.0, 600.0));
+  windowManager.setMinimumSize(const Size(495.0, 600.0));
+  windowManager.setMaximumSize(const Size(495.0, 600.0));
   await windowManager.setTitle('App');
 }

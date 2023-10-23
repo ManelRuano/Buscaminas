@@ -10,20 +10,19 @@ class LayoutSettings extends StatefulWidget {
 }
 
 class LayoutSettingsState extends State<LayoutSettings> {
-  List<String> playerColors = ["Verd", "Blau", "Gris"];
-  List<String> opponentColors = ["Vermell", "Taronja", "Marró"];
+  List<String> dificultad = ["facil", "dificil"];
+  List<String> bombs = ["5", "10", "20"];
 
   // Mostra el CupertinoPicker en un diàleg.
   void _showPicker(String type) {
-    List<String> options = type == "player" ? playerColors : opponentColors;
-    String title = type == "player"
-        ? "Selecciona el color del jugador"
-        : "Selecciona el color de l'oponent";
+    List<String> options = type == "dificultad" ? dificultad : bombs;
+    String title =
+        type == "dificultad" ? "seleciona dificultat" : "Selecciona bombas";
 
     // Troba l'índex de la opció actual a la llista d'opcions
     AppData appData = Provider.of<AppData>(context, listen: false);
     String currentValue =
-        type == "player" ? appData.colorPlayer : appData.colorOpponent;
+        type == "dificultad" ? appData.dificultad : appData.bombs;
     int currentIndex = options.indexOf(currentValue);
     FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: currentIndex);
@@ -53,13 +52,13 @@ class LayoutSettingsState extends State<LayoutSettings> {
               child: SafeArea(
                 top: false,
                 child: CupertinoPicker(
-                  itemExtent: 32.0,
+                  itemExtent: 50.0,
                   scrollController: scrollController,
                   onSelectedItemChanged: (index) {
-                    if (type == "player") {
-                      appData.colorPlayer = options[index];
+                    if (type == "dificultad") {
+                      appData.dificultad = options[index];
                     } else {
-                      appData.colorOpponent = options[index];
+                      appData.bombs = options[index];
                     }
                     // Actualitzar el widget
                     setState(() {});
@@ -93,18 +92,21 @@ class LayoutSettingsState extends State<LayoutSettings> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("dificultad"),
+                CupertinoButton(
+                  onPressed: (() => _showPicker("dificultad")),
+                  child: Text(appData.dificultad),
+                )
+              ],
+            ),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Text("Color jugador: "),
+              const Text("bombs: "),
               CupertinoButton(
-                onPressed: () => _showPicker("player"),
-                child: Text(appData.colorPlayer),
-              )
-            ]),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Text("Color de l'oponent: "),
-              CupertinoButton(
-                onPressed: () => _showPicker("opponent"),
-                child: Text(appData.colorOpponent),
+                onPressed: () => _showPicker("bombs"),
+                child: Text(appData.bombs),
               )
             ]),
           ],

@@ -26,13 +26,22 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
+    int dicultat = 0;
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+      case "dificil":
+        dicultat = 15;
+    }
 
     return GestureDetector(
       onTapUp: (TapUpDetails details) {
         final int row =
-            (details.localPosition.dy / (context.size!.height / 10)).floor();
+            (details.localPosition.dy / (context.size!.height / dicultat))
+                .floor();
         final int col =
-            (details.localPosition.dx / (context.size!.width / 10)).floor();
+            (details.localPosition.dx / (context.size!.width / dicultat))
+                .floor();
 
         appData.playMove(row, col);
         setState(() {}); // Actualitza la vista
@@ -52,12 +61,12 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
             } else {
               return GestureDetector(
                 onTapUp: (TapUpDetails details) {
-                  final int row =
-                      (details.localPosition.dy / (context.size!.height / 10))
-                          .floor();
-                  final int col =
-                      (details.localPosition.dx / (context.size!.width / 10))
-                          .floor();
+                  final int row = (details.localPosition.dy /
+                          (context.size!.height / dicultat))
+                      .floor();
+                  final int col = (details.localPosition.dx /
+                          (context.size!.width / dicultat))
+                      .floor();
 
                   appData.playMove(row, col);
                   setState(() {}); // Actualitza la vista
