@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart'; // per a 'CustomPainter'
 import 'app_data.dart';
@@ -43,7 +42,6 @@ class WidgetTresRatllaPainter extends CustomPainter {
     final double twelveVertical = 12 * size.height / dicultat;
     final double thirteenVertical = 13 * size.height / dicultat;
     final double fourteenVertical = 14 * size.height / dicultat;
-    final double fifteenVertical = 15 * size.height / dicultat;
 
     // Dibuixem les línies verticals
 
@@ -62,11 +60,9 @@ class WidgetTresRatllaPainter extends CustomPainter {
     final double twelveHorizontal = 12 * size.height / dicultat;
     final double thirteenHorizontal = 13 * size.height / dicultat;
     final double fourteenHorizontal = 14 * size.height / dicultat;
-    final double fifteenHorizontal = 15 * size.height / dicultat;
 
     // Dibuixem les línies horitzontals
     List<double> listahorizontal = [];
-    List<double> listavertical = [];
     switch (appData.dificultad) {
       case "facil":
         dicultat = 9;
@@ -80,16 +76,6 @@ class WidgetTresRatllaPainter extends CustomPainter {
           sevenHorizontal,
           eightHorizontal,
         ];
-        listavertical = [
-          firstVertical,
-          secondVertical,
-          trindVertical,
-          fourVertical,
-          fiveVertical,
-          sixVertical,
-          sevenVertical,
-          eightVertical,
-        ];
         break;
       case "dificil":
         dicultat = 15;
@@ -100,7 +86,6 @@ class WidgetTresRatllaPainter extends CustomPainter {
           fourHorizontal,
           fiveHorizontal,
           sixHorizontal,
-          sevenHorizontal,
           eightHorizontal,
           nineHorizontal,
           tenHorizontal,
@@ -108,22 +93,6 @@ class WidgetTresRatllaPainter extends CustomPainter {
           twelveHorizontal,
           thirteenHorizontal,
           fourteenHorizontal
-        ];
-        listavertical = [
-          firstVertical,
-          secondVertical,
-          trindVertical,
-          fourVertical,
-          fiveVertical,
-          sixVertical,
-          sevenVertical,
-          eightVertical,
-          nineVertical,
-          tenVertical,
-          elevenVertical,
-          twelveVertical,
-          thirteenVertical,
-          fourteenVertical
         ];
         break;
     }
@@ -183,8 +152,30 @@ class WidgetTresRatllaPainter extends CustomPainter {
       for (int j = 0; j < dicultat; j++) {
         String cellValue = appData.board[i][j];
         if (cellValue != '-') {
-          // Verifica si la celda no es una bomba ('B')
-          if (cellValue != 'B') {
+          if (cellValue == 'F') {
+            // Dibuja la letra "F" en el centro de la celda
+            final textStyle = TextStyle(
+              color: Colors.black,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            );
+
+            final textPainter = TextPainter(
+              text: TextSpan(text: 'F', style: textStyle),
+              textDirection: TextDirection.ltr,
+            );
+
+            textPainter.layout(
+              maxWidth: cellWidth,
+            );
+
+            final position = Offset(
+              j * cellWidth + (cellWidth - textPainter.width) / 2,
+              i * cellHeight + (cellHeight - textPainter.height) / 2,
+            );
+
+            textPainter.paint(canvas, position);
+          } else if (cellValue != 'B') {
             // Dibuja el número en el centro de la celda
             final textStyle = TextStyle(
               color: Colors.black,

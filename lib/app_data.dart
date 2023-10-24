@@ -12,6 +12,7 @@ class AppData with ChangeNotifier {
   int dift = 0;
 
   List<List<String>> board = [];
+
   bool gameIsOver = false;
   String gameWinner = '-';
 
@@ -465,5 +466,12 @@ class AppData with ChangeNotifier {
           ),
         );
     return completer.future;
+  }
+
+  void placeFlag(int row, int col) {
+    // Asumiendo que board es una matriz que representa el estado del juego
+    if (row >= 0 && row < board.length && col >= 0 && col < board[row].length) {
+      board[row][col] = 'F';
+    }
   }
 }

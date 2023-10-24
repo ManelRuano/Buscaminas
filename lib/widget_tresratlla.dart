@@ -12,6 +12,7 @@ class WidgetTresRatlla extends StatefulWidget {
 
 class WidgetTresRatllaState extends State<WidgetTresRatlla> {
   Future<void>? _loadImagesFuture;
+  bool shouldPlaceFlag = false;
 
   // Al iniciar el widget, carrega les imatges
   @override
