@@ -207,13 +207,27 @@ class WidgetTresRatllaPainter extends CustomPainter {
   // Dibuixa el missatge de joc acabat
   void drawGameOver(Canvas canvas, Size size) {
     int dicultat = 0;
+    bool perdud = false;
+    String message = "";
     switch (appData.dificultad) {
       case "facil":
         dicultat = 9;
       case "dificil":
         dicultat = 15;
     }
-    String message = "El joc ha acabat";
+    for (int i = 0; i < appData.board.length; i++) {
+      for (int j = 0; j < appData.board[i].length; j++) {
+        if (appData.board[i][j] == 'X') {
+          perdud = true;
+        }
+      }
+    }
+    if (perdud = true) {
+      message = "El joc ha acabat. has perdud";
+    }
+    if (perdud = false) {
+      message = "El joc ha acabat. has guañat";
+    }
 
     const textStyle = TextStyle(
       color: Colors.black,

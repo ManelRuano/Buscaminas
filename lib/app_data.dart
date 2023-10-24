@@ -5,16 +5,18 @@ import 'package:flutter/material.dart';
 
 class AppData with ChangeNotifier {
   // App status
-  String colorPlayer = "Verd";
-  String colorOpponent = "Taronja";
   String dificultad = "facil";
   String bombs = "20";
   int dift = 0;
+  bool shouldPlaceFlag = false;
 
   List<List<String>> board = [];
 
   bool gameIsOver = false;
   String gameWinner = '-';
+
+  List<List<int>> bands = [];
+  List<String> oldband = [];
 
   ui.Image? imagePlayer;
   ui.Image? imageOpponent;
@@ -296,6 +298,25 @@ class AppData with ChangeNotifier {
     }
   }
 
+  void flag(int row, int col) {
+    List<List<int>> bands = [];
+    List<String> oldband = [];
+    String post = board[row][col];
+    List<int> band = [];
+    band.add(row);
+    band.add(col);
+    oldband.add(post);
+    bands.add(band);
+    if (board[row][col] == 'F') {
+      for (int i = 0; i < bands.length; i++) {
+        if (oldband[i][0] == row && oldband[i][1] == col) {}
+        board[row][col] = oldband[i];
+      }
+    } else {
+      board[row][col] = 'F';
+    }
+  }
+
   void generateBombs() {
     dif();
     int numBombs = int.parse(bombs);
@@ -304,18 +325,19 @@ class AppData with ChangeNotifier {
     for (int i = 0; i < numBombs; i++) {
       int row, col;
       do {
-        // Genera coordenadas aleatorias para colocar la bomba
         row = random.nextInt(dift);
         col = random.nextInt(dift);
-      } while (board[row][col] ==
-          'B'); // Asegúrate de que no coloques una bomba en una celda ocupada
+      } while (board[row][col] == 'B');
 
-      board[row][col] = 'B'; // Coloca la bomba en la celda
+      board[row][col] = 'B';
     }
   }
 
-  // Fa una jugada, primer el jugador després la maquina
   void playMove(int row, int col) {
+    if (board[row][col] == 'F') {
+      flag(row, col);
+      checkSurroundings(row, col);
+    }
     if (board[row][col] == '-') {
       board[row][col] = 'O';
       checkSurroundings(row, col);
@@ -325,6 +347,7 @@ class AppData with ChangeNotifier {
       gameIsOver = true;
       return;
     }
+
     checkGameWinner();
   }
 
@@ -349,17 +372,15 @@ class AppData with ChangeNotifier {
           newCol >= 0 &&
           newCol < board[newRow].length) {
         if (board[newRow][newCol] == 'B') {
-          return true; // Si hay una bomba en las celdas circundantes, devuelve true
+          return true;
         }
       }
     }
 
-    return false; // No hay bombas en las celdas circundantes
+    return false;
   }
 
-  // Fa una jugada de la màquina, només busca la primera posició lliure
   void checkSurroundings(int row, int col) {
-    // Define las direcciones alrededor de la celda (arriba, abajo, izquierda, derecha, diagonales, etc.)
     List<List<int>> directions = [
       [-1, -1],
       [-1, 0],
@@ -371,20 +392,18 @@ class AppData with ChangeNotifier {
       [1, 1]
     ];
 
-    int bombCount = 0; // Inicializa el contador de bombas cercanas
+    int bombCount = 0;
 
     for (var direction in directions) {
       int newRow = row + direction[0];
       int newCol = col + direction[1];
 
-      // Verifica si las nuevas coordenadas están dentro de los límites del tablero
       if (newRow >= 0 &&
           newRow < board.length &&
           newCol >= 0 &&
           newCol < board[newRow].length) {
         String cellValue = board[newRow][newCol];
         if (cellValue == 'B') {
-          // Si encuentra una bomba, incrementa el contador
           bombCount++;
         }
       }
@@ -394,7 +413,6 @@ class AppData with ChangeNotifier {
       // Si hay bombas cercanas, coloca el número de bombas en lugar de "O"
       board[row][col] = bombCount.toString();
     } else {
-      // Si no hay bombas cercanas, rellena con "0" y sigue verificando recursivamente
       board[row][col] = '0';
 
       for (var direction in directions) {
@@ -408,7 +426,6 @@ class AppData with ChangeNotifier {
             newCol < board[newRow].length) {
           String cellValue = board[newRow][newCol];
           if (cellValue == '-') {
-            // Llama a la función de forma recursiva para seguir rellenando celdas vacías
             checkSurroundings(newRow, newCol);
           }
         }
@@ -416,22 +433,30 @@ class AppData with ChangeNotifier {
     }
   }
 
-  // Comprova si el joc ja té un tres en ratlla
-  // No comprova la situació d'empat
   void checkGameWinner() {
-    for (int i = 0; i < dift; i++) {
-      for (int j = 0; j < dift; j++) {
-        if (board[i][j] == "O") {
-          checkSurroundings(i, j);
+    bool allCellsRevealed = true;
+
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[i].length; j++) {
+        if (board[i][j] != 'B' && board[i][j] != 'X') {
+          // Si una casilla no es una bomba y no ha sido revelada, el juego no ha terminado
+          if (board[i][j] == '-') {
+            allCellsRevealed = false;
+            break;
+          }
         }
       }
+      if (!allCellsRevealed) {
+        break;
+      }
     }
-    // No hi ha guanyador, torna '-'
+
+    if (allCellsRevealed) {
+      gameIsOver = true;
+    }
   }
 
-  // Carrega les imatges per dibuixar-les al Canvas
   Future<void> loadImages(BuildContext context) async {
-    // Si ja estàn carregades, no cal fer res
     if (imagesReady) {
       notifyListeners();
       return;
@@ -466,12 +491,5 @@ class AppData with ChangeNotifier {
           ),
         );
     return completer.future;
-  }
-
-  void placeFlag(int row, int col) {
-    // Asumiendo que board es una matriz que representa el estado del juego
-    if (row >= 0 && row < board.length && col >= 0 && col < board[row].length) {
-      board[row][col] = 'F';
-    }
   }
 }
