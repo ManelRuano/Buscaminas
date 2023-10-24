@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
@@ -13,6 +12,7 @@ class WidgetTresRatlla extends StatefulWidget {
 
 class WidgetTresRatllaState extends State<WidgetTresRatlla> {
   Future<void>? _loadImagesFuture;
+  TapDownDetails? firstTapDetails; // Detalles del primer toque
 
   @override
   void initState() {
@@ -48,17 +48,22 @@ class WidgetTresRatllaState extends State<WidgetTresRatlla> {
         appData.playMove(row, col);
         setState(() {}); // Actualizar la vista
       },
-      onSecondaryTapUp: (TapUpDetails details) {
-        final int row =
-            (details.localPosition.dy / (context.size!.height / dicultat))
-                .floor();
-        final int col =
-            (details.localPosition.dx / (context.size!.width / dicultat))
-                .floor();
+      onDoubleTapDown: (details) {
+        firstTapDetails = details; // Almacena los detalles del primer toque
+      },
+      onDoubleTap: () {
+        if (firstTapDetails != null) {
+          // Asegurarse de que haya ocurrido un toque inicial
+          final int row = (firstTapDetails!.localPosition.dy /
+                  (context.size!.height / dicultat))
+              .floor();
+          final int col = (firstTapDetails!.localPosition.dx /
+                  (context.size!.width / dicultat))
+              .floor();
 
-        appData.flag(row, col);
-        setState(() {});
-        // Actualizar la vista
+          appData.flag(row, col);
+          setState(() {});
+        }
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width,

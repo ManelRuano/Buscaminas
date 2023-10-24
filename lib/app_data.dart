@@ -1,3 +1,5 @@
+// ignore_for_file: recursive_getters
+
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
@@ -6,11 +8,15 @@ import 'package:flutter/material.dart';
 class AppData with ChangeNotifier {
   // App status
   String dificultad = "facil";
-  String bombs = "20";
+  String bombs = "1";
   int dift = 0;
   bool shouldPlaceFlag = false;
 
+  int flagsPlaced = 0;
+  int totalBombs = 0;
+
   List<List<String>> board = [];
+  List<List<String>> fin = [];
 
   bool gameIsOver = false;
   String gameWinner = '-';
@@ -21,7 +27,6 @@ class AppData with ChangeNotifier {
   ui.Image? imagePlayer;
   ui.Image? imageOpponent;
   bool imagesReady = false;
-  void tablero() {}
 
   void resetGame() {
     board = [
@@ -283,6 +288,7 @@ class AppData with ChangeNotifier {
     ];
     gameIsOver = false;
     gameWinner = '-';
+    flagsPlaced = 0;
     generateBombs();
     dif();
   }
@@ -299,26 +305,49 @@ class AppData with ChangeNotifier {
   }
 
   void flag(int row, int col) {
-    List<List<int>> bands = [];
-    List<String> oldband = [];
-    String post = board[row][col];
-    List<int> band = [];
-    band.add(row);
-    band.add(col);
-    oldband.add(post);
-    bands.add(band);
-    if (board[row][col] == 'F') {
-      for (int i = 0; i < bands.length; i++) {
-        if (oldband[i][0] == row && oldband[i][1] == col) {}
-        board[row][col] = oldband[i];
+    if (flagsPlaced < totalBombs) {
+      if (board[row][col] == 'F') {
+        for (int i = 0; i < bands.length; i++) {
+          if (oldband[i][0] == row && oldband[i][1] == col) {
+            board[row][col] = oldband[i];
+            totalBombs++;
+            return;
+          }
+        }
+        board[row][col] = oldband[0];
+        totalBombs++;
+      } else if (board[row][col] != 'O') {
+        oldband = [];
+        oldband.add(board[row][col]);
+        totalBombs--;
+        board[row][col] = 'F';
       }
-    } else {
-      board[row][col] = 'F';
+    }
+  }
+
+  void unflag(int row, int col) {
+    if (board[row][col] == 'F') {
+      // Encuentra la ubicación de la bandera en el array de oldband
+      for (int i = 0; i < bands.length; i++) {
+        if (bands[i][0] == row && bands[i][1] == col) {
+          // Restaura el valor anterior de la celda
+          board[row][col] = oldband[i];
+          // Elimina la ubicación de la bandera del array de bands
+          bands.removeAt(i);
+          // Incrementa el contador de bombas
+          totalBombs++;
+          return;
+        }
+      }
+      // Si no se encuentra en bands, restaura el valor a oldband[0]
+      board[row][col] = oldband[0];
+      totalBombs++;
     }
   }
 
   void generateBombs() {
     dif();
+    totalBombs = int.parse(bombs);
     int numBombs = int.parse(bombs);
     Random random = Random();
 
@@ -331,6 +360,7 @@ class AppData with ChangeNotifier {
 
       board[row][col] = 'B';
     }
+    fin = board;
   }
 
   void playMove(int row, int col) {
@@ -371,6 +401,14 @@ class AppData with ChangeNotifier {
           newRow < board.length &&
           newCol >= 0 &&
           newCol < board[newRow].length) {
+        if (board[newRow][newCol] == 'F') {
+          unflag(newRow, newCol);
+          if (board[newRow][newCol] == 'B') {
+            board[newRow][newCol] == 'F';
+            return true;
+          }
+          board[newRow][newCol] == 'F';
+        }
         if (board[newRow][newCol] == 'B') {
           return true;
         }
@@ -403,6 +441,13 @@ class AppData with ChangeNotifier {
           newCol >= 0 &&
           newCol < board[newRow].length) {
         String cellValue = board[newRow][newCol];
+        if (cellValue == 'F') {
+          unflag(newRow, newCol);
+          if (board[newRow][newCol] == 'B') {
+            board[newRow][newCol] == 'F';
+            bombCount++;
+          }
+        }
         if (cellValue == 'B') {
           bombCount++;
         }
@@ -439,10 +484,17 @@ class AppData with ChangeNotifier {
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board[i].length; j++) {
         if (board[i][j] != 'B' && board[i][j] != 'X') {
-          // Si una casilla no es una bomba y no ha sido revelada, el juego no ha terminado
           if (board[i][j] == '-') {
             allCellsRevealed = false;
             break;
+          }
+          if (board[i][j] == 'F') {
+            flag(i, j);
+            if (board[i][j] == '-') {
+              allCellsRevealed = false;
+              board[i][j] == 'F';
+              break;
+            }
           }
         }
       }
@@ -452,6 +504,7 @@ class AppData with ChangeNotifier {
     }
 
     if (allCellsRevealed) {
+      board = fin;
       gameIsOver = true;
     }
   }

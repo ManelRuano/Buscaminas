@@ -204,6 +204,49 @@ class WidgetTresRatllaPainter extends CustomPainter {
     }
   }
 
+  void drawBombs(Canvas canvas, Size size) {
+    switch (appData.dificultad) {
+      case "facil":
+        dicultat = 9;
+        break;
+      case "dificil":
+        dicultat = 15;
+        break;
+    }
+    double cellWidth = size.width / dicultat;
+    double cellHeight = size.height / dicultat;
+
+    for (int i = 0; i < dicultat; i++) {
+      for (int j = 0; j < dicultat; j++) {
+        String cellValue = appData.board[i][j];
+        if (cellValue == 'B') {
+          // Dibuja la letra "B" en el centro de la celda
+          final textStyle = TextStyle(
+            color: Colors.black,
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          );
+
+          final textPainter = TextPainter(
+            text: TextSpan(text: 'B', style: textStyle),
+            textDirection: TextDirection.ltr,
+          );
+
+          textPainter.layout(
+            maxWidth: cellWidth,
+          );
+
+          final position = Offset(
+            j * cellWidth + (cellWidth - textPainter.width) / 2,
+            i * cellHeight + (cellHeight - textPainter.height) / 2,
+          );
+
+          textPainter.paint(canvas, position);
+        }
+      }
+    }
+  }
+
   // Dibuixa el missatge de joc acabat
   void drawGameOver(Canvas canvas, Size size) {
     int dicultat = 0;
@@ -215,18 +258,19 @@ class WidgetTresRatllaPainter extends CustomPainter {
       case "dificil":
         dicultat = 15;
     }
+    int bomb = 0;
     for (int i = 0; i < appData.board.length; i++) {
       for (int j = 0; j < appData.board[i].length; j++) {
-        if (appData.board[i][j] == 'X') {
-          perdud = true;
+        if (appData.board[i][j] == 'B') {
+          bomb++;
         }
       }
     }
-    if (perdud = true) {
-      message = "El joc ha acabat. has perdud";
-    }
-    if (perdud = false) {
+    int numBombs = int.parse(appData.bombs);
+    if (bomb == numBombs) {
       message = "El joc ha acabat. has guañat";
+    } else {
+      message = "El joc ha acabat. has perdud";
     }
 
     const textStyle = TextStyle(
@@ -266,8 +310,12 @@ class WidgetTresRatllaPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     drawBoardLines(canvas, size);
-    drawBoardStatus(canvas, size);
-    if (appData.gameIsOver == true) {
+    if (appData.gameIsOver) {
+      drawBombs(canvas, size);
+    } else {
+      drawBoardStatus(canvas, size);
+    }
+    if (appData.gameIsOver) {
       drawGameOver(canvas, size);
     }
   }
