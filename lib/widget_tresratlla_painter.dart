@@ -37,11 +37,11 @@ class WidgetTresRatllaPainter extends CustomPainter {
     final double sevenVertical = 7 * size.width / dicultat;
     final double eightVertical = 8 * size.width / dicultat;
     final double nineVertical = 9 * size.width / dicultat;
-    final double tenVertical = 10 * size.height / dicultat;
-    final double elevenVertical = 11 * size.height / dicultat;
-    final double twelveVertical = 12 * size.height / dicultat;
-    final double thirteenVertical = 13 * size.height / dicultat;
-    final double fourteenVertical = 14 * size.height / dicultat;
+    final double tenVertical = 10 * size.width / dicultat;
+    final double elevenVertical = 11 * size.width / dicultat;
+    final double twelveVertical = 12 * size.width / dicultat;
+    final double thirteenVertical = 13 * size.width / dicultat;
+    final double fourteenVertical = 14 * size.width / dicultat;
 
     // Dibuixem les línies verticals
 
@@ -60,6 +60,7 @@ class WidgetTresRatllaPainter extends CustomPainter {
     final double twelveHorizontal = 12 * size.height / dicultat;
     final double thirteenHorizontal = 13 * size.height / dicultat;
     final double fourteenHorizontal = 14 * size.height / dicultat;
+    final double fiveteenHorizontal = 15 * size.height / dicultat;
 
     // Dibuixem les línies horitzontals
     List<double> listahorizontal = [];
@@ -86,14 +87,17 @@ class WidgetTresRatllaPainter extends CustomPainter {
           fourHorizontal,
           fiveHorizontal,
           sixHorizontal,
+          sevenHorizontal,
           eightHorizontal,
           nineHorizontal,
           tenHorizontal,
           elevenHorizontal,
           twelveHorizontal,
           thirteenHorizontal,
-          fourteenHorizontal
+          fourteenHorizontal,
+          fiveteenHorizontal,
         ];
+
         break;
     }
 

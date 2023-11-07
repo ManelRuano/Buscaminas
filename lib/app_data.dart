@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 class AppData with ChangeNotifier {
   // App status
-  String dificultad = "facil";
-  String bombs = "1";
+  String dificultad = "dificil";
+  String bombs = "5";
   int dift = 0;
   bool shouldPlaceFlag = false;
 
